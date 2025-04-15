@@ -126,89 +126,52 @@ F) A UN education envoy wants..."></textarea>
     </div>
 
     <script>
-        document.getElementById('analyzeBtn').addEventListener('click', async function() {
-            const inputText = document.getElementById('inputText').value;
-            const loading = document.getElementById('loading');
-            const result = document.getElementById('result');
-            
-            if (!inputText.trim()) {
-                alert('Please enter some sentences to analyze.');
-                return;
-            }
-            
-            loading.style.display = 'block';
-            result.style.display = 'none';
-            
-            try {
-                // Extract sentences (assuming format "A) Sentence text")
-                const sentences = inputText.split('\n')
-                    .filter(line => line.trim())
-                    .map(line => {
-                        const match = line.match(/^([A-Za-z]\))\s*(.+)/);
-                        return match ? { label: match[1], text: match[2] } : null;
-                    })
-                    .filter(Boolean);
-                
-                if (sentences.length < 2) {
-                    throw new Error('Please enter at least 2 sentences to rearrange');
-                }
-                
-                // Simulate LanguageTool API analysis (in a real app, you would call the actual API)
-                const analysis = await simulateLanguageToolAnalysis(sentences);
-                
-                // Display results
-                document.getElementById('output').innerHTML = formatResults(analysis);
-                result.style.display = 'block';
-                
-            } catch (error) {
-                alert('Error: ' + error.message);
-                console.error(error);
-            } finally {
-                loading.style.display = 'none';
-            }
-        });
+document.getElementById('analyzeBtn').addEventListener('click', async function() {
+    const inputText = document.getElementById('inputText').value;
+    const loading = document.getElementById('loading');
+    const result = document.getElementById('result');
+    
+    if (!inputText.trim()) {
+        alert('Please enter some sentences to analyze.');
+        return;
+    }
+    
+    loading.style.display = 'block';
+    result.style.display = 'none';
+    
+    try {
+        // Extract sentences (assuming format "A) Sentence text")
+        const sentences = inputText.split('\n')
+            .filter(line => line.trim())
+            .map(line => {
+                const match = line.match(/^([A-Za-z]\))\s*(.+)/);
+                return match ? { label: match[1], text: match[2] } : null;
+            })
+            .filter(Boolean);
         
-        // This simulates what LanguageTool API might return
-    /*    async function simulateLanguageToolAnalysis(sentences) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    // This is a simplified simulation - real API would analyze sentence relationships
-                    const labels = sentences.map(s => s.label);
-                    
-                    // For demo purposes, we'll use a simple rearrangement
-                    // In reality, you'd call LanguageTool API here:
-                    // const response = await fetch('https://api.languagetool.org/v2/...');
-                    
-                    // Mock response for Taliban sentences example
-                    const mockResponse = {
-                        optimalSequence: ['D', 'A', 'B', 'F', 'C', 'E'],
-                        reasoning: {
-                            D: "Best opener as it establishes current Taliban diplomatic actions",
-                            A: "Explains their justification for maintaining current policies",
-                            B: "Introduces potential influencers who could affect change",
-                            F: "Shows strongest international response to their policies",
-                            C: "Demonstrates alternative support systems available",
-                            E: "Effective conclusion highlighting the current stalemate"
-                        },
-                        confidence: 88
-                    };
-                    
-                    // Map back to full sentences
-                    const orderedSentences = mockResponse.optimalSequence.map(label => {
-                        return sentences.find(s => s.label === label + ')');
-                    });
-                    
-                    resolve({
-                        sequence: mockResponse.optimalSequence.join(' → '),
-                        sentences: orderedSentences,
-                        reasoning: mockResponse.reasoning,
-                        confidence: mockResponse.confidence
-                    });
-                }, 1500); // Simulate API delay
-            });
-        } */
+        if (sentences.length < 2) {
+            throw new Error('Please enter at least 2 sentences to rearrange');
+        }
         
-		async function callLanguageToolAPI(sentences) {
+        // Call the LanguageTool API
+        const apiResponse = await callLanguageToolAPI(sentences);
+        
+        // Process the API response and create the analysis object
+        const analysis = processLanguageToolResponse(apiResponse, sentences);
+        
+        // Display results
+        document.getElementById('output').innerHTML = formatResults(analysis);
+        result.style.display = 'block';
+        
+    } catch (error) {
+        alert('Error: ' + error.message);
+        console.error(error);
+    } finally {
+        loading.style.display = 'none';
+    }
+});
+
+async function callLanguageToolAPI(sentences) {
     const textToAnalyze = sentences.map(s => s.text).join(' ');
     const response = await fetch('https://api.languagetool.org/v2/check', {
         method: 'POST',
@@ -223,40 +186,70 @@ F) A UN education envoy wants..."></textarea>
     });
     return await response.json();
 }
-		
-		
-		
-        function formatResults(analysis) {
-            let html = `
-                <div class="sequence">Optimal sequence: ${analysis.sequence}</div>
-                <div class="confidence">
-                    <div class="confidence-level" style="width: ${analysis.confidence}%"></div>
-                </div>
-                <p>Confidence: ${analysis.confidence}%</p>
-                
-                <h3>Rearranged Paragraph:</h3>
-            `;
-            
-            analysis.sentences.forEach(sentence => {
-                html += `
-                    <div class="sentence">
-                        <strong>${sentence.label}</strong> ${sentence.text}
-                    </div>
-                `;
-            });
-            
-            html += `<h3>AI Reasoning:</h3>`;
-            
-            for (const [label, reason] of Object.entries(analysis.reasoning)) {
-                html += `
-                    <div class="sentence">
-                        <strong>${label}:</strong> ${reason}
-                    </div>
-                `;
-            }
-            
-            return html;
-        }
+
+function processLanguageToolResponse(apiResponse, sentences) {
+    // Note: LanguageTool doesn't actually provide sentence rearrangement
+    // This is a placeholder for how you might process a real API response
+    // You would need to implement your own logic or use a different API
+    
+    // For demo purposes, we'll use a simple rearrangement
+    const mockResponse = {
+        optimalSequence: ['D', 'A', 'B', 'F', 'C', 'E'],
+        reasoning: {
+            D: "Best opener as it establishes current Taliban diplomatic actions",
+            A: "Explains their justification for maintaining current policies",
+            B: "Introduces potential influencers who could affect change",
+            F: "Shows strongest international response to their policies",
+            C: "Demonstrates alternative support systems available",
+            E: "Effective conclusion highlighting the current stalemate"
+        },
+        confidence: 88
+    };
+    
+    // Map back to full sentences
+    const orderedSentences = mockResponse.optimalSequence.map(label => {
+        return sentences.find(s => s.label === label + ')');
+    });
+    
+    return {
+        sequence: mockResponse.optimalSequence.join(' → '),
+        sentences: orderedSentences,
+        reasoning: mockResponse.reasoning,
+        confidence: mockResponse.confidence
+    };
+}
+
+function formatResults(analysis) {
+    let html = `
+        <div class="sequence">Optimal sequence: ${analysis.sequence}</div>
+        <div class="confidence">
+            <div class="confidence-level" style="width: ${analysis.confidence}%"></div>
+        </div>
+        <p>Confidence: ${analysis.confidence}%</p>
+        
+        <h3>Rearranged Paragraph:</h3>
+    `;
+    
+    analysis.sentences.forEach(sentence => {
+        html += `
+            <div class="sentence">
+                <strong>${sentence.label}</strong> ${sentence.text}
+            </div>
+        `;
+    });
+    
+    html += `<h3>AI Reasoning:</h3>`;
+    
+    for (const [label, reason] of Object.entries(analysis.reasoning)) {
+        html += `
+            <div class="sentence">
+                <strong>${label}:</strong> ${reason}
+            </div>
+        `;
+    }
+    
+    return html;
+}
     </script>
 </body>
 </html>
