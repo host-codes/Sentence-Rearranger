@@ -3,39 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sentence Rearranger with PDF Export</title>
+    <title>AI-Powered Sentence Rearranger</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-random"></i> Sentence Rearranger</h1>
-        <p class="instructions">Enter your jumbled sentences below (one per line) and click the button to rearrange them logically.</p>
+        <h1><i class="fas fa-random"></i> AI-Powered Sentence Rearranger</h1>
+        <p class="instructions">Enter your jumbled sentences below (one per line with labels like A). B). etc.)</p>
         
         <div class="input-section">
-            <textarea id="inputText" placeholder="Paste your jumbled sentences here, one per line...&#10;Example:&#10;A). It's the Commission's answer to curb growing violence...&#10;B). Cases of patient violence are many...&#10;C). The new rule, however well-intentioned...&#10;D). A poorly funded public healthcare system...&#10;E). The National Medical Commission notifies..."></textarea>
-            <button id="rearrangeBtn"><i class="fas fa-sort-alpha-down"></i> Rearrange Sentences</button>
+            <textarea id="inputText" placeholder="Example input:&#10;A). It's the Commission's answer to curb growing violence...&#10;B). Cases of patient violence are many...&#10;C). The new rule, however well-intentioned...&#10;D). A poorly funded public healthcare system...&#10;E). The National Medical Commission notifies..."></textarea>
+            <button id="analyzeBtn"><i class="fas fa-robot"></i> Analyze with AI</button>
         </div>
         
-        <div class="output-section" id="contentToExport">
+        <div class="output-section" id="pdfContent">
             <div class="output-header">
-                <h2><i class="fas fa-align-left"></i> Rearranged Paragraph</h2>
-                <button id="exportPdf" class="pdf-button" title="Download as PDF">
-                    <i class="fas fa-file-pdf"></i> Export to PDF
+                <h2><i class="fas fa-align-left"></i> AI Analysis Result</h2>
+                <button id="downloadPdf" class="pdf-button">
+                    <i class="fas fa-file-pdf"></i> Download PDF
                 </button>
             </div>
-            <div id="outputText" class="output-area"></div>
-            <div class="explanation-header">
-                <h3><i class="fas fa-lightbulb"></i> Rearrangement Explanation</h3>
+            <div id="loading" class="loading-area">
+                <div class="spinner"></div>
+                <p>Analyzing sentences with AI...</p>
             </div>
-            <div id="explanation" class="explanation-area"></div>
+            <div id="outputResult" class="result-area"></div>
         </div>
     </div>
 
-    <!-- Include jsPDF library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
